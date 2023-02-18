@@ -1,0 +1,7 @@
+{
+  "jwtPrivateKey": "unsecureKey",
+  "db": "mongodb://localhost:27017",
+
+  "port": "3900",
+  "requiresAuth": false
+}
