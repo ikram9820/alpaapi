@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "jest --watchAll --verbose"
-    },
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -17,5 +18,8 @@
     "joi": "^17.7.1",
     "lodash": "^4.17.21",
     "mongoose": "^6.9.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   }
 }

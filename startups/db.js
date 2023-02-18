@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const config = require("config");
-const mongoURL = config.get("db");
+// const mongoURL = config.get("db");
+const mongoURL = `mongodb://ikram:1234@mongo:27017/?authSource=admin`
 
 module.exports = connectWithRetry = () => {
-  mongoose.set("strictQuery", false);
   mongoose
     .connect(mongoURL, {
       useNewUrlParser: true,
