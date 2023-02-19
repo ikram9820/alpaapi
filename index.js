@@ -3,9 +3,10 @@ const express = require("express");
 
 const app = express();
 
-require("./startups/cors")(app);
-require("./startups/routes")(app);
-require("./startups/db")();
+require("./startup/cors")(app);
+require("./startup/routes")(app);
+require("./startup/db")();
+require("./startup/validation")();
 
 
 const port = process.env.PORT || config.get("port");

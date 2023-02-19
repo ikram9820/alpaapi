@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   api:
     build: .
@@ -34,12 +34,12 @@ volumes:
 #       then: docker volume prune
 
 # to interact with db
-#    first: docker exec -it chatalpaapi-api mongo -u 'ikram' -p '1234'
+#    first: docker exec -it alpaapi-api mongo -u 'ikram' -p '1234'
 #         then: show dbs
 #         then: use mydbname
 
 # to follow the logs 
-#    docker logs chatalpaapi-api -f
+#    docker logs alpaapi-api -f
   
 # to find ip address 
 #    ip address of a service is acttually it's name because dns resolve it
