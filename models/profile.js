@@ -20,7 +20,7 @@ const profileSchema = mongoose.Schema({
   },
   gendre: {
     type: String,
-    enum: ["Male", "Female", "Non-binary"],
+    enum: ["Male", "Female", "Others"],
   },
   profession: {
     type: String,
@@ -43,11 +43,12 @@ const Profile = mongoose.model("Profile", profileSchema);
 function validateProfile(profile) {
   const schema = Joi.object({
     birth_date: Joi.date().required(),
-    gendre: Joi.string().valid("Male", "Female", "Non-binary"),
+    gendre: Joi.string().valid("Male", "Female", "Others"),
     country: Joi.string().min(3).max(50),
     language: Joi.string().min(3).max(50),
     profession: Joi.string().min(3).max(50),
     contact_no: Joi.string().min(8).max(50),
+    user: Joi.objectId().required()
   });
   return schema.validate(profile);
 }
