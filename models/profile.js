@@ -27,11 +27,11 @@ const profileSchema = mongoose.Schema({
     minlength: 3,
     maxlength: 50,
   },
-  contact_no: {
-    type: String,
-    minlength: 8,
-    maxlength: 50,
-  },
+  // contact_no: {
+  //   type: String,
+  //   minlength: 8,
+  //   maxlength: 50,
+  // },
   user: {
     type: userSchema,
     required: true,
@@ -47,7 +47,7 @@ function validateProfile(profile) {
     country: Joi.string().min(3).max(50),
     language: Joi.string().min(3).max(50),
     profession: Joi.string().min(3).max(50),
-    contact_no: Joi.string().min(8).max(50),
+    // contact_no: Joi.string().min(8).max(50),
     user: Joi.objectId().required()
   });
   return schema.validate(profile);

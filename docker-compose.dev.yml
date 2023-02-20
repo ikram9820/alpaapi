@@ -1,15 +1,54 @@
 version: "3"
 services:
-  api:
+  api: 
     build:
       context: .
       args: 
         NODE_ENV: development
+    ports:
+      - "3000:3000"
     volumes:
       - ./:/app
       - /app/node_modules
     environment:
       - NODE_ENV=development
-
+      - PORT=3000
     command: npm run dev
+    depends_on:
+      - db
  
+  db:
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=ikram
+      - MONGO_INITDB_ROOT_PASSWORD=1234
+    volumes:
+      - mongo-db:/data/db
+volumes:
+  mongo-db:
+
+
+  # to run new image's container
+#  docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+
+# to stop container
+#  docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
+
+# to prune anonymous volume 
+#  first: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+#       then: docker volume prune
+
+# to interact with db
+#    first: docker exec -it alpaapi-api mongo -u 'ikram' -p '1234'
+#         then: show dbs
+#         then: use mydbname
+
+# to follow the logs 
+#    docker logs alpaapi-api -f
+  
+# to find ip address 
+#    ip address of a service is acttually it's name because dns resolve it
+  
+# to get details about specific netowrk
+#       first: docker network ls
+#            then: docker network inspect networkname 

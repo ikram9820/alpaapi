@@ -5,8 +5,17 @@ services:
       context: .
       args: 
         NODE_ENV: production
+    ports:
+      - "3000:3000"
     environment:
       - NODE_ENV=production
     command: node index.js
-    
-  
+  db:
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=ikram
+      - MONGO_INITDB_ROOT_PASSWORD=1234
+    volumes:
+      - mongo-db:/data/db
+volumes:
+  mongo-db:  
