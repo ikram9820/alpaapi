@@ -1,10 +1,8 @@
 const mongoose = require("mongoose");
-const userSchema = require("./user");
-
 const Joi = require("joi");
 
-const profileSchema = mongoose.Schema({
-  birt_date: {
+const profileSchema = new mongoose.Schema({
+  birth_date: {
     type: Date,
     required: true,
   },
@@ -27,13 +25,9 @@ const profileSchema = mongoose.Schema({
     minlength: 3,
     maxlength: 50,
   },
-  // contact_no: {
-  //   type: String,
-  //   minlength: 8,
-  //   maxlength: 50,
-  // },
   user: {
-    type: userSchema,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
 });

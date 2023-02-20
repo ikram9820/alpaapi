@@ -1,6 +1,0 @@
-node_module
-Dockerfile
-.dockerignore
-.git
-.gitignore
-*docker

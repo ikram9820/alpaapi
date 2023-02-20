@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const config = require("config");
 const jwt = require("jsonwebtoken");
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
     minlength: 4,
@@ -58,6 +58,4 @@ function validateUser(user) {
 }
 
 exports.User = User;
-exports.userSchema = userSchema;
-
 exports.validate = validateUser;
