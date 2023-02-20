@@ -4,7 +4,7 @@ const express = require("express");
 const router = express.Router();
 const auth  = require('../middlewares/auth');
 const admin = require('../middlewares/admin')
-const { validate, User } = require("../models/user");
+const { validateUpdate, validate, User } = require("../models/user");
 const {Profile} = require("../models/profile");
 
 
@@ -21,7 +21,7 @@ router.get("/me", auth, async (req, res) => {
 
 
 router.put("/me", [auth], async (req, res) => {
-  const { error } = validate(req.body);
+  const { error } = validateUpdate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
   
   const user = await User.findByIdAndUpdate(
@@ -32,18 +32,16 @@ router.put("/me", [auth], async (req, res) => {
     if (!user)
     return res.status(404).send("The user with the given ID was not found.");
 
-    res.send(user);
+    res.send(_.pick(user,['name','email']));
   });
   
   
-  router.delete("/me", [auth, admin], async (req, res) => {
+  router.delete("/me", [auth], async (req, res) => {
     let user = await User.findByIdAndRemove(req.user._id);
     const profile = await Profile.findByIdAndRemove({user:user._id});
-    
     if (!user)
     return res.status(404).send("The user with the given ID was not found.");
-    user = {...user._doc,profile}
-    res.send(user);
+    res.send(`user  deleted`);
   });
 
 
@@ -67,6 +65,11 @@ router.post("/", async (req, res) => {
 });
 
 
+router.get("/", async (req, res) => {
+  let users = await User.find().select(" -password -__v");
+  if (!users || users.length <1) return res.status(404).send("users are not found")
+  res.send(users);
+});
 
   
   router.get("/:id", async (req, res) => {
@@ -75,7 +78,6 @@ router.post("/", async (req, res) => {
     const profile = await Profile.findOne({user:userId}).select('-__v -user');
     if (!user) return res.status(404).send("user not found")
     user = {...user._doc,profile}
-    console.log(user)
     res.send(user);
   });
 
