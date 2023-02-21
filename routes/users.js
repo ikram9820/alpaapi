@@ -6,16 +6,22 @@ const auth  = require('../middlewares/auth');
 const admin = require('../middlewares/admin')
 const { validateUpdate, validate, User } = require("../models/user");
 const {Profile} = require("../models/profile");
+const { Status } = require("../models/status");
 
 
 router.get("/me", auth, async (req, res) => {
   const userId = req.user._id
   let user = await User.findById(userId).select("-password -__v");
-  // if (!user) return res.status(403).send("you are not authorized for this account")
   const profile = await Profile.findOne({user:userId}).select('-__v -user');
   user = {...user._doc,profile}
   console.log(user)
   res.send(user);
+});
+
+router.get("/me/statuses", auth, async (req, res) => {
+  const userId = req.user._id
+  let my_statuses = await Status.find({user:userId}).select("-__v");
+  res.send(my_statuses);
 });
 
 
@@ -79,6 +85,18 @@ router.get("/", async (req, res) => {
     if (!user) return res.status(404).send("user not found")
     user = {...user._doc,profile}
     res.send(user);
+  });
+
+  router.get("/:id/statuses", auth, async (req, res) => {
+    const userId = req.params.id;
+    let my_statuses = await Status.find({user:userId}).select("-__v");
+    res.send(my_statuses);
+  });
+ 
+  router.get("/:id/statuses?latest", auth, async (req, res) => {
+    const userId = req.params.id;
+    let my_statuses = await Status.find({user:userId}).select("-__v");
+    res.send(my_statuses);
   });
 
 module.exports = router;
