@@ -7,7 +7,7 @@ const statusSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 250,
   },
-  at: {
+  uploaded_at: {
     type: Date,
     default: Date.now()
   },

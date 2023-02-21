@@ -93,9 +93,17 @@ router.get("/", async (req, res) => {
     res.send(my_statuses);
   });
  
-  router.get("/:id/statuses?latest", auth, async (req, res) => {
+  router.get("/:id/statuses/latest", auth, async (req, res) => {
     const userId = req.params.id;
-    let my_statuses = await Status.find({user:userId}).select("-__v");
+
+    const query = {
+      $and: [
+        { user: userId },
+        { uploaded_at: { $gte:Date.yesterday()}}// yesterday is not correct
+      ]
+    };
+
+    let my_statuses = await Status.find(query).select("-__v");
     res.send(my_statuses);
   });
 
