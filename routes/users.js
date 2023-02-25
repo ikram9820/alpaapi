@@ -25,7 +25,6 @@ router.get("/me/statuses", auth, async (req, res) => {
 });
 
 
-
 router.put("/me", [auth], async (req, res) => {
   const { error } = validateUpdate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -67,7 +66,7 @@ router.post("/", async (req, res) => {
   const token = user.generateAuthToken();
   res
   .header("x-auth-token", token)
-  .send(_.pick(user, ["_id", "name", "email",'birth_date']));
+  .json({..._.pick(user, ["_id", "name", "email",'birth_date']),token});
 });
 
 

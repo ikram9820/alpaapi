@@ -23,6 +23,7 @@ router.get("/:id", async (req, res) => {
   res.send(status);
 });
 
+// not fully protected
 router.delete("/:id", async (req, res) => {
   let status = await Status.findByIdAndRemove(req.params.id)
   if (!status) return res.status(404).send("staus is not found")
