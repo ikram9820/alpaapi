@@ -2,7 +2,6 @@ const Joi = require("joi");
 const mongoose = require("mongoose");
 const config = require("config");
 const jwt = require("jsonwebtoken");
-const {VisibilityFilter} = require('./profile_visibility')
 const moment = require('moment')
 
 
@@ -25,10 +24,7 @@ const userSchema = new mongoose.Schema({
     maxlength: 255,
     minlength: 8,
   },
-  birth_date: {
-    type: Date,
-    // required: true,
-  },
+
   dp_url: {
     type: String,
     maxlength: 255,
@@ -49,16 +45,7 @@ userSchema.methods.generateAuthToken = function(){
  return token
 }
 
-// creating default visibility filter
- userSchema.pre('save', async function(next) {
-    const userage = moment().diff(this.birth_date, 'years');
-    const age = {min:0,max:120}
-    if( userage > 16) {age.min = 16 ; age.max = 120}
-    else {age.min = 7; age.max= 16}
-    const visibility = new VisibilityFilter({ user: this._id, ageRange: age });
-    await visibility.save();
-  next();
-});
+
 
 
 const User = mongoose.model("User", userSchema);
@@ -69,7 +56,6 @@ function validateUser(user) {
     name: Joi.string().min(5).max(50).required(),
     email: Joi.string().min(5).max(255).required().email(),
     password: Joi.string().min(5).max(255).required(),
-    birth_date: Joi.date().required(),
     dp_url: Joi.string().min(5).max(255),
   });
   return schema.validate(user);
