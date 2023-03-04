@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 const {VisibilityFilter} = require('./profile_visibility')
+const moment = require('moment');
+const { lowerCase } = require("lodash");
 
 
 const profileSchema = new mongoose.Schema({
@@ -16,7 +18,7 @@ const profileSchema = new mongoose.Schema({
   },
   gender: {
     type: String,
-    enum: ["Male", "Female", "Others"],
+    enum: ["male", "female", "others"],
   },
   profession: {
     type: String,
@@ -51,10 +53,10 @@ const Profile = mongoose.model("Profile", profileSchema);
 
 function validateProfile(profile) {
   const schema = Joi.object({
-    gender: Joi.string().valid("Male", "Female", "Others"),
-    country: Joi.string().min(3).max(50),
-    language: Joi.string().min(3).max(50),
-    profession: Joi.string().min(3).max(50),
+    gender: Joi.string().lowercase().valid("male", "female", "others"),
+    country: Joi.string().lowercase().min(3).max(50),
+    language: Joi.string().lowercase().min(3).max(50),
+    profession: Joi.string().lowercase().min(3).max(50),
     // contact_no: Joi.string().min(8).max(50),
     birth_date: Joi.date().required(),
     user: Joi.objectId().required()

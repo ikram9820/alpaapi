@@ -5,6 +5,12 @@ const auth  = require('../middlewares/auth');
 const { Status, validate} = require('../models/status')
  
 
+router.get("/me", auth, async (req, res) => {
+  const userId = req.user._id
+  let my_statuses = await Status.find({user:userId}).select("-__v");
+  res.send(my_statuses);
+});
+
 
 router.post("/",auth, async (req, res) => {
   const { error } = validate(req.body);
@@ -22,6 +28,7 @@ router.get("/:id", async (req, res) => {
   if (!status) return res.status(404).send("staus is not found")
   res.send(status);
 });
+
 
 router.delete("/:id",auth, async (req, res) => {
   let status = await Status.findOne(req.params.id)

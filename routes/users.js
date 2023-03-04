@@ -10,19 +10,9 @@ const { Status } = require("../models/status");
 
 
 router.get("/me", auth, async (req, res) => {
-  const userId = req.user._id
-  let user = await User.findById(userId).select("-password -__v");
-  const profile = await Profile.findOne({user:userId}).select('-__v -user');
-  user = {...user._doc,profile}
-  console.log(user)
-  res.send(user);
+  res.send(req.user);
 });
 
-router.get("/me/statuses", auth, async (req, res) => {
-  const userId = req.user._id
-  let my_statuses = await Status.find({user:userId}).select("-__v");
-  res.send(my_statuses);
-});
 
 
 router.put("/me", [auth], async (req, res) => {
