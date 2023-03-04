@@ -9,7 +9,7 @@ module.exports = function (app) {
   app.use(express.json());
   app.use("/api/v1/auth", auth);
   app.use("/api/v1/users", users);
-  app.use("/api/v1/profiles", profiles);
+  app.use("/api/v1/profile", profiles);
   app.use("/api/v1/visibility", visibility);
   app.use("/api/v1/statuses", statuses);
 };
