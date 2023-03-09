@@ -8,7 +8,6 @@ const { validateUpdate, validate, User } = require("../models/user");
 const { Profile } = require("../models/profile");
 const { Status } = require("../models/status");
 
-
 router.put("/me", [auth], async (req, res) => {
   const { error } = validateUpdate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -20,10 +19,8 @@ router.put("/me", [auth], async (req, res) => {
   );
   if (!user)
     return res.status(404).send("The user with the given ID was not found.");
-    
-    console.log(user)
-    const token = req.header("x-auth-token");
-    res.json({ ..._.pick(user, ["_id", "name", "email","about"]), token });
+  const token = req.header("x-auth-token");
+  res.json({ ..._.pick(user, ["_id", "name", "email", "about"]), token });
 });
 
 // router.delete("/me", [auth], async (req, res) => {
@@ -41,9 +38,7 @@ router.post("/", async (req, res) => {
   let user = await User.findOne({ email: req.body.email });
   if (user) return res.status(400).send("user already registered");
 
-  user = new User(
-    _.pick(req.body, ["name", "email", "password","about"])
-  );
+  user = new User(_.pick(req.body, ["name", "email", "password", "about"]));
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   await user.save();
@@ -51,7 +46,7 @@ router.post("/", async (req, res) => {
   const token = user.generateAuthToken();
   res
     .header("x-auth-token", token)
-    .json({ ..._.pick(user, ["_id", "name", "email","about"]), token });
+    .json({ ..._.pick(user, ["_id", "name", "email", "about"]), token });
 });
 
 router.get("/", async (req, res) => {
