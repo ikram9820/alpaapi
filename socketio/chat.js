@@ -1,7 +1,15 @@
-const { generateMessage, generateLocationMessage } = require('./utils/messages')
-const { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users')
+const {
+  generateMessage,
+  generateLocationMessage,
+} = require("./utils/messages");
+const {
+  addUser,
+  removeUser,
+  getUser,
+  getUsersInRoom,
+} = require("./utils/users");
 
-module.exports =  function (io){
+module.exports = function (io) {
   io.on("connection", (socket) => {
     console.log("New WebSocket connection");
 
@@ -29,23 +37,31 @@ module.exports =  function (io){
       callback();
     });
 
+    socket.on("createChat", (options, callback) => {
+      callback();
+      console.log(options);
+    });
+    socket.on("deleteChat", (options, callback) => {
+      callback();
+      console.log(options);
+    });
+    socket.on("addUserToChat", (options, callback) => {
+      callback();
+      console.log(options);
+    });
+    socket.on("deleteUserFromChat", (options, callback) => {
+      callback();
+      console.log(options);
+    });
     socket.on("sendMessage", (message, callback) => {
-      console.log(message)
+      console.log(message);
       const user = getUser(socket.id);
-      io.to(user.room).emit("message", generateMessage(user.username, message));
+      io.emit("message", generateMessage("user.username", message));
       callback();
     });
-
-    socket.on("sendLocation", (coords, callback) => {
-      const user = getUser(socket.id);
-      io.to(user.room).emit(
-        "locationMessage",
-        generateLocationMessage(
-          user.username,
-          `https://google.com/maps?q=${coords.latitude},${coords.longitude}`
-        )
-      );
+    socket.on("deleteMessage", (options, callback) => {
       callback();
+      console.log(options);
     });
 
     socket.on("disconnect", () => {
