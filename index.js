@@ -8,7 +8,6 @@ require("./startup/cors")(app);
 require("./startup/routes")(app);
 require("./startup/config")();
 const {io,httpServer} = require("./startup/socketio")(app)
-require("./socketio/chat")(io);
 require("./startup/db")();
 require("./startup/validation")();
 const port = process.env.PORT || config.get("port");

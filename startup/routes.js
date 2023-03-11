@@ -12,5 +12,4 @@ module.exports = function (app) {
   app.use("/api/v1/profile", profiles);
   app.use("/api/v1/visibility", visibility);
   app.use("/api/v1/statuses", statuses);
-  app.use("/api/v1/chats", chats);
 };
