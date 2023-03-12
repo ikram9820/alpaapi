@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    minlength: 4,
+    minlength: 2,
     maxlength: 255,
     required: true,
   },
@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
   },
   about: {
     type: String,
-    minlength: 4,
+    minlength: 2,
     maxlength: 1000,
     required: true,
   },
@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     minlength: 8,
   },
 
-  dp_url: {
+  dp: {
     type: String,
     maxlength: 255,
     minlength: 5,
@@ -55,19 +55,19 @@ const User = mongoose.model("User", userSchema);
 
 function validateUser(user) {
   const schema = Joi.object({
-    name: Joi.string().min(5).max(50).required(),
-    bio: Joi.string().min(5).max(1000),
+    name: Joi.string().min(2).max(50).required(),
+    about: Joi.string().min(2).max(1000),
     email: Joi.string().min(5).max(255).required().email(),
     password: Joi.string().min(5).max(255).required(),
-    dp_url: Joi.string().min(5).max(255),
+    dp: Joi.string().min(5).max(255),
   });
   return schema.validate(user);
 }
 function validateUpdateUser(user) {
   const schema = Joi.object({
-    name: Joi.string().min(5).max(50).required(),
-    about: Joi.string().min(5).max(1000),
-    dp_url: Joi.string().min(5).max(255),
+    name: Joi.string().min(2).max(50).required(),
+    about: Joi.string().min(2).max(1000),
+    dp: Joi.string().min(5).max(255),
   });
   return schema.validate(user);
 }

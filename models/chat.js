@@ -3,32 +3,37 @@ const mongoose = require("mongoose");
 
 const chatSchema = new mongoose.Schema(
   {
-    chatName: { type: String, trim: true, required: true },
+    name: { type: String, trim: true, required: true },
+    chatDp: {
+      type: String,
+      maxlength: 255,
+      minlength: 5,
+    },
+    chatCreator: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     isGroupChat: { type: Boolean, default: false },
     users: [
       { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     ],
-    latestMessage: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Message",
-    },
-    is_accepted: { type: Boolean, default: false },
-    start_at: {
-      type: Date,
-      default: Date.now(),
-    },
+    admins: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "User"},
+    ],
   },
-  { timestamps: true, versionKey: false }
+  { timestamps: true }
 );
 
 const Chat = mongoose.model("Chat", chatSchema);
 
-function validateChat(chat) {
-  const schema = Joi.object({
-    chatName: Joi.string().min(2).max(255).required,
-  });
-  return schema.validate(chat);
-}
+// function validateChat(chat) {
+//   const schema = Joi.object({
+//     name: Joi.string().min(2).max(255).required,
+//     chatCreator:Joi.objectId().required(),
+//   });
+//   return schema.validate(chat);
+// }
 
 exports.Chat = Chat;
-exports.validate = validateChat;
+// exports.validate = validateChat;

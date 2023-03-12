@@ -14,7 +14,7 @@ router.put("/me", [auth], async (req, res) => {
 
   const user = await User.findByIdAndUpdate(
     req.user._id,
-    _.pick(req.body, ["name", "about", "dp_url"]),
+    _.pick(req.body, ["name", "about", "dp"]),
     { new: true } //unknown concept
   );
   if (!user)

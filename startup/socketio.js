@@ -9,30 +9,28 @@ module.exports = function (app) {
     },
   });
 
-
   io.on("connection", (socket) => {
     socket.on("setup", (userData) => {
-      socket.join(userData._id);
+      if (userData) socket.join(userData._id);
       socket.emit("connected");
     });
-  
-    socket.on("join chat", (room) => {
-      socket.join(room);
+
+    socket.on("join chat", (chatId) => {
+      socket.join(chatId);
+      socket.emit("joined chat", chatId);
+      // console.log("chatId: ",chatId);
     });
-  
+
     socket.on("new message", (recievedMessage) => {
-      var chat = recievedMessage.chat;
-      chat.users.forEach((user) => {
-        if (user == recievedMessage.sender._id) return;
-        socket.in(user).emit("message recieved", recievedMessage);
-      });
+      // console.log("recievedMessage: ", recievedMessage);
+      const chat = recievedMessage.chat;
+      socket.broadcast.to(chat).emit("message recieved", recievedMessage);
     });
-  
+
     socket.off("setup", () => {
       socket.leave(userData._id);
     });
   });
 
-
-  return  httpServer;
+  return httpServer;
 };
