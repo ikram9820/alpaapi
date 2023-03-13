@@ -12,16 +12,22 @@ module.exports = function (app) {
   io.on("connection", (socket) => {
     socket.emit("connected");
    
-    socket.on("join chat", (chatId) => {
+    socket.on("joinChat", (chatId) => {
       socket.join(chatId);
       socket.emit("joined chat", chatId);
       // console.log("chatId: ",chatId);
     });
 
-    socket.on("new message", (recievedMessage) => {
+    socket.on("sendMessage", (recievedMessage) => {
       // console.log("recievedMessage: ", recievedMessage);
       const chat = recievedMessage.chat;
-      socket.broadcast.to(chat).emit("message recieved", recievedMessage);
+      socket.to(chat).emit("messageRecieved", recievedMessage);
+    });
+    socket.on("createGroup", (group) => {
+      console.log("group: ", group);
+      const chatId = group._id;
+      socket.join(chatId);
+      socket.to(chatId).emit("groupCreated", group);
     });
 
 
