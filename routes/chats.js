@@ -25,29 +25,27 @@ router.post("/", auth, async (req, res) => {
 
   try {
     const createdChat = await Chat.create(chatData);
-    const FullChat = await Chat.findOne({ _id: createdChat._id }).populate(
-      "users",
-      "-password"
-    );
-    return res.status(200).send(FullChat);
+    return res.status(200).send(createdChat);
   } catch (error) {
     return res.status(400).send(error.message);
   }
 });
 
 router.post("/group", auth, async (req, res) => {
+  const { name, chatDp, isPublic } = req.body;
+  const userId = req.user._id;
   try {
-    let users = req.body.users;
-    users.push(req.user);
     const newGroup = {
-      name: req.body.name,
-      chatDp: req.body.chatDp,
-      users: users,
+      name: name,
+      chatDp: chatDp || null,
+      users: [userId],
       isGroupChat: true,
-      admins: [req.user._id],
-      chatCreator: req.user._id,
+      isPublic: isPublic || false,
+      admins: [userId],
+      chatCreator: userId,
     };
     const groupChat = await Chat.create(newGroup);
+    console.log(groupChat);
     return res.status(200).send(groupChat);
   } catch (error) {
     return res.status(400).send(error.message);
@@ -57,20 +55,29 @@ router.post("/group", auth, async (req, res) => {
 router.put("/rename", async (req, res) => {
   try {
     const { chatId, name } = req.body;
-
     const updatedChat = await Chat.findByIdAndUpdate(
       chatId,
       { name: name },
       { new: true }
-    )
-      .populate("users", "-password")
-      .populate("admins", "-password");
-
-    if (!updatedChat) {
-      return res.status(404).send("Chat Not Found");
-    } else {
-      res.json(updatedChat);
+    );
+    if (!updatedChat) return res.status(404).send("Chat Not Found");
+    res.json(updatedChat);
+  } catch (error) {
+    return res.status(400).send(error.message);
+  }
+});
+router.put("/changevisibility", auth, async (req, res) => {
+  try {
+    const { chatId, isPublic } = req.body;
+    const chat = await Chat.findById(chatId);
+    if (!chat) return res.status(404).send("Chat Not Found");
+    const isAdmin = chat.admins.includes(req.user._id);
+    if (isAdmin) {
+      chat.isPublic = isPublic;
+      await chat.save();
+      return res.json(chat);
     }
+    return res.status(403).send("You are not admin");
   } catch (error) {
     return res.status(400).send(error.message);
   }
@@ -83,15 +90,9 @@ router.put("/removemember", async (req, res) => {
       chatId,
       { $pull: { users: userId } },
       { new: true }
-    )
-      .populate("users", "-password")
-      .populate("admins", "-password");
-
-    if (!removed) {
-      return res.status(404).send("Chat Not Found");
-    } else {
-      res.json(removed);
-    }
+    );
+    if (!removed) return res.status(404).send("Chat Not Found");
+    res.json(removed);
   } catch (error) {
     return res.status(400).send(error.message);
   }
@@ -100,20 +101,13 @@ router.put("/removemember", async (req, res) => {
 router.put("/addmember", async (req, res) => {
   try {
     const { chatId, userId } = req.body;
-
     const added = await Chat.findByIdAndUpdate(
       chatId,
       { $push: { users: userId } },
       { new: true }
-    )
-      .populate("users", "-password")
-      .populate("admins", "-password");
-
-    if (!added) {
-      return res.status(404).send("Chat Not Found");
-    } else {
-      res.json(added);
-    }
+    );
+    if (!added) return res.status(404).send("Chat Not Found");
+    res.json(added);
   } catch (error) {
     return res.status(400).send(error.message);
   }

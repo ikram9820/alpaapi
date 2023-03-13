@@ -10,11 +10,8 @@ module.exports = function (app) {
   });
 
   io.on("connection", (socket) => {
-    socket.on("setup", (userData) => {
-      if (userData) socket.join(userData._id);
-      socket.emit("connected");
-    });
-
+    socket.emit("connected");
+   
     socket.on("join chat", (chatId) => {
       socket.join(chatId);
       socket.emit("joined chat", chatId);
@@ -27,9 +24,7 @@ module.exports = function (app) {
       socket.broadcast.to(chat).emit("message recieved", recievedMessage);
     });
 
-    socket.off("setup", () => {
-      socket.leave(userData._id);
-    });
+
   });
 
   return httpServer;
