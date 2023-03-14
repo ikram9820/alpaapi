@@ -52,16 +52,18 @@ router.post("/group", auth, async (req, res) => {
   }
 });
 
-router.put("/rename", async (req, res) => {
+router.put("/rename", auth, async (req, res) => {
   try {
     const { chatId, name } = req.body;
-    const updatedChat = await Chat.findByIdAndUpdate(
-      chatId,
-      { name: name },
-      { new: true }
-    );
-    if (!updatedChat) return res.status(404).send("Chat Not Found");
-    res.json(updatedChat);
+    const chat = await Chat.findById(chatId);
+    if (!chat) return res.status(404).send("Chat Not Found");
+    const isAdmin = chat.admins.includes(req.user._id);
+    if (isAdmin) {
+      chat.name = name;
+      await chat.save();
+      return res.json(chat);
+    }
+    return res.status(403).send("You are not admin");
   } catch (error) {
     return res.status(400).send(error.message);
   }
@@ -83,7 +85,7 @@ router.put("/changevisibility", auth, async (req, res) => {
   }
 });
 
-router.put("/removemember", async (req, res) => {
+router.put("/removemember", auth, async (req, res) => {
   try {
     const { chatId, userId } = req.body;
     const removed = await Chat.findByIdAndUpdate(
@@ -98,7 +100,7 @@ router.put("/removemember", async (req, res) => {
   }
 });
 
-router.put("/addmember", async (req, res) => {
+router.put("/addmember", auth, async (req, res) => {
   try {
     const { chatId, userId } = req.body;
     const added = await Chat.findByIdAndUpdate(
