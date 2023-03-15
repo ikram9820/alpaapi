@@ -31,6 +31,10 @@ router.post("/", auth, async (req, res) => {
 
   const message = new Message(newMessage);
   await message.save();
-  res.status(200).json(message);
+  const createdMessage = await Message.findById(message._id).populate(
+    "sender",
+    "_id name"
+  );
+  res.status(200).json(createdMessage);
 });
 module.exports = router;
