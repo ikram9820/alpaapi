@@ -3,6 +3,7 @@ const auth = require("../middlewares/auth");
 const { Chat } = require("../models/chat");
 const router = express.Router();
 
+// it retrives the list of all user's chats
 router.get("/", auth, async (req, res) => {
   try {
     let chats = await Chat.find({
@@ -18,12 +19,22 @@ router.post("/", auth, async (req, res) => {
   const { userId } = req.body;
   var chatData = {
     name: "sender",
-    chatDp: "sender",
+    chatDp: "",
     chatCreator: req.user._id,
     users: [req.user._id, userId],
   };
 
   try {
+    let chat = await Chat.findOne({
+      users: {
+        $and: [
+          { isGroupChat: false },
+          { $elemMatch: { $eq: req.user._id } },
+          { $elemMatch: { $eq: userId } },
+        ],
+      },
+    });
+    if (chat) return res.status(200).send(chat);
     const createdChat = await Chat.create(chatData);
     return res.status(200).send(createdChat);
   } catch (error) {

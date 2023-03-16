@@ -1,13 +1,16 @@
 const express = require("express");
 const auth = require("../middlewares/auth");
+const { Chat } = require("../models/chat");
 const { Message, validate } = require("../models/message");
 const router = express.Router();
 
 //Get Fetch all message
 router.get("/:chatId", auth, async (req, res) => {
   try {
-    const chat = req.params.chatId;
-    const messages = await Message.find({ chat })
+    const chatId = req.params.chatId;
+    const chat = await Chat.findById(chatId);
+    if (!chat) return res.status(404).send("There is no chat by this Id");
+    const messages = await Message.find({ chat:chatId })
       .populate("sender", "name dp")
       .lean()
       .exec();
@@ -33,7 +36,7 @@ router.post("/", auth, async (req, res) => {
   await message.save();
   const createdMessage = await Message.findById(message._id).populate(
     "sender",
-    "_id name"
+    "name"
   );
   res.status(200).json(createdMessage);
 });
